@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const axios = require('axios');
 
 const app = express();
 const customerRoute = require("./routes/customer");
@@ -65,9 +66,10 @@ io.on("connection", (socket) => {
   });
 });
 
-http.listen(3000, "localhost", () => {
-  console.log(`Socket.IO server running at http://localhost:3000/`);
+http.listen(3000, '64.226.86.113', () => {
+  console.log(`Server and Socket.IO running at http://64.226.86.113:3000/`);
 });
+
 
 app.get('/get-weather', async (req, res) => {
   try {
