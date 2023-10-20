@@ -62,8 +62,8 @@ io.on("connection", (socket) => {
   });
 });
 
-http.listen(3000, '64.226.86.113', () => {
-  console.log(`Server and Socket.IO running at http://64.226.86.113:3000/`);
+http.listen(3000, '0.0.0.0', () => {
+  console.log(`Server and Socket.IO running at http://0.0.0.0:3000/`);
 });
 
 
