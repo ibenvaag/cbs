@@ -1,25 +1,38 @@
 const http = require('http');
+const startTime = process.hrtime();
 
-// URLen til serveren du vil måle RTT til
-const serverUrl = 'http://64.226.86.113:3000';
+// Definer serveradressen og portnummeret
+const serverAddress = 'http://64.226.86.113';
+const port = 3000;
 
-// Funksjon for å sende en HTTP-forespørsel og måle RTT
-async function pingServer() {
-  const startTime = Date.now();
+// Lag en HTTP-forespørsel til serveren
+const request = http.get(`${serverAddress}:${port}`, (response) => {
+    const endTime = process.hrtime(startTime);
+    const elapsedTimeInMilliseconds = endTime[0] * 1000 + endTime[1] / 1e6;
+    
+    console.log(`Server responded in ${elapsedTimeInMilliseconds} ms`);
+});
 
-  try {
-    // Send en HTTP GET-forespørsel til serveren
-    await http.get(serverUrl, (response) => {
-      const endTime = Date.now();
-      const rtt = endTime - startTime;
+// Håndter eventuelle feil
+request.on('error', (error) => {
+    console.error(`Error: ${error.message}`);
+});
 
-      // Skriv ut RTT til konsollen
-      console.log(`Server responded in ${rtt} ms`);
+const pingInterval = 1000; // Tidsintervall for å sende Pinger-forespørsler (1 sekund)
+
+function pingServer() {
+    const pingStartTime = process.hrtime();
+    const pingRequest = http.get(`${serverAddress}:${port}`, (response) => {
+        const pingEndTime = process.hrtime(pingStartTime);
+        const pingTimeInMilliseconds = pingEndTime[0] * 1000 + pingEndTime[1] / 1e6;
+
+        console.log(`Round Trip Time (RTT): ${pingTimeInMilliseconds} ms`);
     });
-  } catch (error) {
-    console.error('Error:', error.message);
-  }
+
+    pingRequest.on('error', (error) => {
+        console.error(`Error: ${error.message}`);
+    });
 }
 
-// Kjør pingen periodisk (for eksempel hvert sekund)
-setInterval(pingServer, 1000);
+// Periodisk ping til serveren
+setInterval(pingServer, pingInterval);
