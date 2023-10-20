@@ -68,3 +68,26 @@ io.on("connection", (socket) => {
 http.listen(3000, "localhost", () => {
   console.log(`Socket.IO server running at http://localhost:3000/`);
 });
+
+app.get('/get-weather', async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://api.open-meteo.com/v1/forecast?latitude=55.6759&longitude=12.5655&hourly=temperature_2m"
+    );
+
+    console.log("API-respons:", response.data); // Legg til denne linjen for å logge responsen
+
+    const temperatureData = response.data.hourly.temperature_2m;
+
+    const temperature = temperatureData[0];
+
+    if (temperature < 20) {
+      res.json({ message: "Det er for koldt til drinks." });
+    } else {
+      res.json({ message: "Tilbyd kaffe." });
+    }
+  } catch (error) {
+    console.error("Feil ved API-forespørsel:", error);
+    res.status(500).json({ error: "Feil ved henting av værdata." });
+  }
+});
