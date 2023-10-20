@@ -42,9 +42,10 @@ app.use("/store", storeRoutes);
 
 // Start server
 
-app.listen(3000, () => {
+app.listen(3000, '64.226.86.113', () => {
   console.log("Server open on port 3000");
 });
+
 
 // Socket IO
 
